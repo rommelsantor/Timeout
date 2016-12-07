@@ -1,7 +1,7 @@
 # Timeout
 Interactive, stateful JS (ES6) timeout interface
 
-The `setTimeout()` and `clearTimeout()` primitives are fine for basic functionality, but they leave much to be desired. For example, JS provides no means by which to test if a timeout has executed.
+The `setTimeout()` and `clearTimeout()` primitives are fine for basic functionality, but they leave much to be desired. For example, JS provides no means by which to test if a timeout has finished executing, still waiting to be executed, or if has been cleared.
 
 The `Timeout` object seeks to improve the situation by allowing you to:
 * set and clear timeouts the same way you've always done
