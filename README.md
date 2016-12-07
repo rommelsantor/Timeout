@@ -8,7 +8,7 @@ The `Timeout` object seeks to improve the situation by allowing you to:
 * check if a particular timeout has been created or cleared
 * check if a timeout is pending execution or if it has already executed
 
-You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier.
+You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier. Checkout the examples below. You can also play around with it at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde).
 
 ## Example 1 - a simple timeout and its status
 ```
