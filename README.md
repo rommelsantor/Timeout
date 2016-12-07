@@ -5,7 +5,7 @@ The `setTimeout()` and `clearTimeout()` primitives are fine for basic functional
 
 The `Timeout` object seeks to improve the situation by allowing you to:
 * set and clear timeouts the same way you've always done
-* check if a particular timeout has been created
+* check if a particular timeout has been created or cleared
 * check if a timeout is pending execution or if it has already executed
 
 You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier.
