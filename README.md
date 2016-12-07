@@ -54,7 +54,7 @@ const throttle = (waitMs, func) => (...args) =>
   !Timeout.pending(func) && Timeout.set(func, () => {}, waitMs) && func.apply(this, args)
 
 const throttledScroll = throttle(100, event => {
-  $(window).toggleClass('is-scrolled', $(window).scrollTop() > 0)
+  $('html').toggleClass('is-scrolled', $(window).scrollTop() > 0)
 })
 
 $(window).scroll(throttledScroll)
