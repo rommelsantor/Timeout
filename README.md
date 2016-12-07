@@ -48,8 +48,10 @@ setTimeout(() => {
 
 ## Example 2 - event throttle
 ```
+// use the callback as the key to set a timeout that does nothing but
+// tracks whether the timeout has executed
 const throttle = (waitMs, func) => (...args) =>
-  !Timeout.pending(func) && Timeout.set(func, func.bind(this, args), waitMs)
+  !Timeout.pending(func) && Timeout.set(func, () => {}, waitMs) && func.apply(this, args)
 
 const throttledScroll = throttle(100, event => {
   $(window).toggleClass('is-scrolled', $(window).scrollTop() > 0)
