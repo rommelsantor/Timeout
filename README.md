@@ -31,7 +31,7 @@ console.log('--- just set the timeout. status check:')
 showStatus()
 console.log('ran() = ', ran())
 
-setTimeout(() => {
+Timeout.set(() => {
   console.log('--- 1 second elapsed. status check:')
   showStatus()
   console.log('ran() = ', ran())
