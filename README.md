@@ -43,7 +43,6 @@ Timeout.set(() => {
   console.log('ran() = ', ran())
   
 }, 1000)
-
 ```
 
 ## Example 2 - event throttle
