@@ -17,6 +17,8 @@ const Timeout = (() => {
       key = func
     }
 
+    clear(key)
+    
     const invoke = () => (complete[key] = true, func())
 
     keyId[key] = setTimeout(invoke, ms)
