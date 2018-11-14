@@ -86,6 +86,16 @@ const Timeout = (() => {
     return set(key, func, remainingTime)
   }
 
+  const remaining = key => {
+    if (!metadata[key]) return 0
+
+    const { ms, startTime, timeSpentWaiting } = metadata[key]
+
+    return paused(key)
+      ? ms - timeSpentWaiting
+      : Math.max(0, startTime + ms - new Date().getTime())
+  }
+
   return {
     clear,
     executed,
@@ -93,6 +103,7 @@ const Timeout = (() => {
     pause,
     paused,
     pending,
+    remaining,
     resume,
     set,
   }
