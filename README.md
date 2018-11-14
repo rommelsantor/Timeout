@@ -8,7 +8,12 @@ The `Timeout` object seeks to improve the situation by allowing you to:
 * check if a particular timeout has been created or cleared
 * check if a timeout is pending execution or if it has already executed
 
-You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier. Checkout the examples below. You can also play around with it at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde).
+You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier. Checkout the examples below. You can also play around with a demo at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde) and read a little more at [this Medium article](https://hackernoon.com/smarter-javascript-timeouts-24308f3be5ab).
+
+## Install
+
+* npm install smart-timeout
+* `import Timeout from 'smart-timeout'` -or- `const Timeout = require('smart-timeout');`
 
 ## Methods:
 * `Timeout.set(keyName, function, millisecs = 0)` - schedule `function` to execute after `millisecs`, identified by `keyName`
