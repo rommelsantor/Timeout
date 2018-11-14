@@ -10,6 +10,24 @@ The `Timeout` object seeks to improve the situation by allowing you to:
 
 You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier. Checkout the examples below. You can also play around with it at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde).
 
+Methods:
+* `Timeout.set(keyName, function, millisecs = 0)` - schedule `function` to execute after `millisecs`, identified by `keyName`
+* `Timeout.set(function, millisecs = 0)` - same as above, except identifiable by `function` itself
+* `Timeout.exists(key)` - returns true if function has been defined and not erased, whether or not it has executed
+* `Timeout.pending(key)` - returns true if function exists and has not yet executed
+* `Timeout.executed(key)` - returns true if function exists and has executed
+* `Timeout.pause(key)` - pauses a function that exists but has not yet executed
+* `Timeout.paused(key)` - returns true if function exists and is currently paused
+* `Timeout.resume(key)` - allows paused execution countdown to resume
+* `Timeout.clear(key, erase = true)` - clears a scheduled countdown; by default, knowledge of its existence is erased
+
+## v2 changes
+
+* implementation has been refactored significantly
+* `pause()`, `paused()`, `resume()` have been added - thanks to [Pedro Muller](https://github.com/pedrommuller) for the suggestion!
+* checking arguments to `set()` for a function rather than making assumptions about the params
+* added default of `0` to the `ms` parameter of `set()`
+
 ## Example 1 - a simple timeout and its status
 ```
 const announce = () => {
