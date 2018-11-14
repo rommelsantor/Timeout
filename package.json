@@ -1,0 +1,40 @@
+{
+  "name": "smart-timeout",
+  "version": "2.0.0",
+  "description": "Timers with Cleared, Pending, Executed, & Paused States",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx babel --presets @babel/preset-env src --out-dir lib",
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rommelsantor/Timeout.git"
+  },
+  "keywords": [
+    "timeout",
+    "setTimeout",
+    "delay",
+    "wait",
+    "pause",
+    "resume",
+    "cancel",
+    "timer"
+  ],
+  "author": "Rommel Santor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rommelsantor/Timeout/issues"
+  },
+  "homepage": "https://github.com/rommelsantor/Timeout#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.1.6"
+  },
+  "jest": {
+    "verbose": true
+  }
+}

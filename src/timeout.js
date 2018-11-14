@@ -37,7 +37,7 @@ const Timeout = (() => {
 
     const invoke = () => (metadata[key] = false, func())
 
-    keyId[key] = setTimeout(invoke, ms)
+    keyId[key] = setTimeout(invoke, ms || 0)
 
     metadata[key] = {
       func,
@@ -108,3 +108,5 @@ const Timeout = (() => {
     set,
   }
 })()
+
+export default Timeout
