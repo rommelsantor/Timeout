@@ -1,7 +1,7 @@
 const assert = require('assert');
 const Timeout = require('.');
 
-function my_timer() {
+function my_timer(param1, param2, param3) {
   console.log('-----');
   console.log('* entered my_timer!');
 
@@ -73,6 +73,23 @@ function unpause_my_timer() {
   console.log('* unpause_my_timer ending');
   console.log('-----');
 }
+
+function my_timer_with_params(param1, param2, param3) {
+  console.log('-----');
+  console.log('* entered my_timer_with_params!');
+
+  console.log('* my_timer_with_params got param1:', param1);
+  assert(typeof param1 !== 'undefined', 'my_timer_with_params param1 should be defined');
+
+  console.log('* my_timer_with_params got param2:', param2);
+  assert(typeof param2 !== 'undefined', 'my_timer_with_params param2 should be defined');
+
+  console.log('* my_timer_with_params got param3:', param3);
+  assert(typeof param3 === 'undefined', 'my_timer_with_params param3 should be UNdefined');
+}
+
+console.log('Setting my_timer_with_params to execute in 0 ms with two parameters: "Foo" and "Bar"');
+Timeout.set(my_timer_with_params, 0, 'Foo', 'Bar');
 
 console.log('Setting my_timer to execute in 3 seconds.');
 
