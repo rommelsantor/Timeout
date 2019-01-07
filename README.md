@@ -16,8 +16,8 @@ You can use a human-readable identifier to uniquely identify a timeout or the ca
 * `import Timeout from 'smart-timeout'` -or- `const Timeout = require('smart-timeout');`
 
 ## Methods:
-* `Timeout.set(keyName, function, millisecs = 0)` - schedule `function` to execute after `millisecs`, identified by `keyName`
-* `Timeout.set(function, millisecs = 0)` - same as above, except identifiable by `function` itself
+* `Timeout.set(keyName, function, millisecs = 0, param1, param2, ...)` - schedule `function` to execute after `millisecs`, identified by `keyName`
+* `Timeout.set(function, millisecs = 0, param1, param2, ...)` - same as above, except identifiable by `function` itself
 * `Timeout.exists(key)` - returns true if function has been defined and not erased, whether or not it has executed
 * `Timeout.pending(key)` - returns true if function exists and has not yet executed
 * `Timeout.remaining(key)` - returns milliseconds remaining in the countdown until execution
