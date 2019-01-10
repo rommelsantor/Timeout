@@ -12,8 +12,10 @@ You can use a human-readable identifier to uniquely identify a timeout or the ca
 
 ## Install
 
-* npm install smart-timeout
-* `import Timeout from 'smart-timeout'` -or- `const Timeout = require('smart-timeout');`
+* `npm install smart-timeout`
+* `import Timeout from 'smart-timeout'`
+  -or-
+  `const Timeout = require('smart-timeout');`
 
 ## Methods:
 * `Timeout.set(keyName, function, millisecs = 0, param1, param2, ...)` - schedule `function` to execute after `millisecs`, identified by `keyName`
@@ -24,6 +26,7 @@ You can use a human-readable identifier to uniquely identify a timeout or the ca
 * `Timeout.executed(key)` - returns true if function exists and has executed
 * `Timeout.pause(key)` - pauses a function that exists but has not yet executed
 * `Timeout.paused(key)` - returns true if function exists and is currently paused
+* `Timeout.restart(key)` - restart pending or paused timer with its original millisecs
 * `Timeout.resume(key)` - allows paused execution countdown to resume
 * `Timeout.clear(key, erase = true)` - clears a scheduled countdown; by default, knowledge of its existence is erased
 
@@ -34,6 +37,7 @@ You can use a human-readable identifier to uniquely identify a timeout or the ca
 * `remaining()` added - returns milliseconds remaining until execution
 * checking arguments to `set()` for a function rather than making assumptions about the params
 * added default of `0` to the `ms` parameter of `set()`
+* `restart()` added - thanks to [Roli4711](https://github.com/Roli4711) for the suggestion!
 
 ## Example 1 - a simple timeout and its status
 ```

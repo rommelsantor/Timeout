@@ -1,5 +1,6 @@
 const Timeout = (() => {
   const keyId = {}
+  const originalMs = {}
   const metadata = {}
 
   const clear = (key, erase = true) => {
@@ -8,6 +9,7 @@ const Timeout = (() => {
 
     if (erase) {
       delete metadata[key]
+      delete originalMs[key]
     }
   }
 
@@ -38,6 +40,7 @@ const Timeout = (() => {
     const invoke = () => (metadata[key] = false, func(...params))
 
     keyId[key] = setTimeout(invoke, ms || 0)
+    originalMs[key] = originalMs[key] || ms
 
     metadata[key] = {
       func,
@@ -97,6 +100,20 @@ const Timeout = (() => {
       : Math.max(0, startTime + ms - new Date().getTime())
   }
 
+  const restart = key => {
+    if (!metadata[key]) return false
+
+    const { func, params, paused } = metadata[key]
+
+    clear(key, false)
+
+    if (paused) {
+      metadata[key].paused = false
+    }
+
+    return set(key, func, originalMs[key], ...params)
+  }
+
   return {
     clear,
     executed,
@@ -105,6 +122,7 @@ const Timeout = (() => {
     paused,
     pending,
     remaining,
+    restart,
     resume,
     set,
   }
