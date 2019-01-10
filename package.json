@@ -1,6 +1,6 @@
 {
   "name": "smart-timeout",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Timers with Cleared, Pending, Executed, & Paused States",
   "main": "index.js",
   "scripts": {
