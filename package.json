@@ -29,11 +29,10 @@
   "homepage": "https://github.com/rommelsantor/Timeout#readme",
   "devDependencies": {
     "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.6"
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.4.3"
   },
-  "dependencies": {
-    "@babel/preset-env": "^7.1.6"
-  },
+  "dependencies": {},
   "jest": {
     "verbose": true
   }
