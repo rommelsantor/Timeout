@@ -16,6 +16,10 @@ function my_timer(param1, param2, param3) {
   console.log('Has my_timer executed?', Timeout.executed('my_timer'));
   assert(Timeout.executed('my_timer'), 'my_timer should now have executed');
 
+  let lastExec = Timeout.lastExecuted('my_timer');
+  console.log('When was the last time my_timer has been executed?', lastExec);
+  console.assert(lastExec, 'my_timer last execution should not be null');
+
   console.log('Is my_timer paused?', Timeout.paused('my_timer'));
   assert(!Timeout.paused('my_timer'), 'my_timer should not be paused');
 

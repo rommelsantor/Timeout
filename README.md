@@ -24,11 +24,16 @@ You can use a human-readable identifier to uniquely identify a timeout or the ca
 * `Timeout.pending(key)` - returns true if function exists and has not yet executed
 * `Timeout.remaining(key)` - returns milliseconds remaining in the countdown until execution
 * `Timeout.executed(key)` - returns true if function exists and has executed
+* `Timeout.lastExecuted(key)` - returns the timestamp of the last execution
 * `Timeout.pause(key)` - pauses a function that exists but has not yet executed
 * `Timeout.paused(key)` - returns true if function exists and is currently paused
 * `Timeout.restart(key)` - restart pending or paused timer with its original millisecs
 * `Timeout.resume(key)` - allows paused execution countdown to resume
 * `Timeout.clear(key, erase = true)` - clears a scheduled countdown; by default, knowledge of its existence is erased
+
+## v2.1 changes
+ 
+* implementation of logging function `lastExecuted()`
 
 ## v2 changes
 
