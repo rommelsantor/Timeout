@@ -1,5 +1,16 @@
 # Timeout
+
 Interactive, stateful JS (ES6) timeout interface
+
+<a href="https://npmjs.com/package/smart-timeout" target="_blank">
+  <img alt="" src="https://img.shields.io/npm/dm/smart-timeout.svg" />
+</a>
+
+<a href="https://bundlephobia.com/result?p=smart-timeout" target="_blank">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/smart-timeout" />
+</a>
+
+---
 
 The `setTimeout()` and `clearTimeout()` primitives are fine for basic functionality, but they leave much to be desired. For example, JS provides no means by which to test if a timeout has finished executing, still waiting to be executed, or if has been cleared.
 
