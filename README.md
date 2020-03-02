@@ -1,6 +1,6 @@
 # Timeout
 
-Interactive, stateful JS (ES6) timeout interface
+Interactive, stateful timeouts
 
 <a href="https://npmjs.com/package/smart-timeout" target="_blank">
   <img alt="" src="https://img.shields.io/npm/dm/smart-timeout.svg" />
@@ -10,92 +10,117 @@ Interactive, stateful JS (ES6) timeout interface
   <img alt="" src="https://badgen.net/bundlephobia/minzip/smart-timeout" />
 </a>
 
----
+## Background
 
-The `setTimeout()` and `clearTimeout()` primitives are fine for basic functionality, but they leave much to be desired. For example, JS provides no means by which to test if a timeout has finished executing, still waiting to be executed, or if has been cleared.
+The `setTimeout()` and `clearTimeout()` primitives are fine for basic functionality, but they leave much to be desired. For example, JS provides no means by which to test if a timeout has finished executing, still waiting to be executed, if has been cleared, etc.
 
-The `Timeout` object seeks to improve the situation by allowing you to:
-* set and clear timeouts the same way you've always done
-* check if a particular timeout has been created or cleared
-* check if a timeout is pending execution or if it has already executed
+`Timeout` enhances and improves on native functionality by allowing you to:
+* set and clear timeouts the same way you always have
+* check if a timeout has already been created
+* check if a timeout has been cleared
+* check if a timeout is still pending execution
+* check if a timeout has already executed
+* pause a pending timeout's countdown
+* determine the number of milliseconds remaining in a timeout's countdown
+* restart a timeout, whether pending or already executed
 
-You can use a human-readable identifier to uniquely identify a timeout or the callback itself will be used as its own unique identifier. Checkout the examples below. You can also play around with a demo at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde) and read a little more at [this Medium article](https://hackernoon.com/smarter-javascript-timeouts-24308f3be5ab).
+Checkout the examples below. You can also play around with a demo at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde) and read a little more at [this Medium article](https://hackernoon.com/smarter-javascript-timeouts-24308f3be5ab).
 
 ## Install
 
 * `npm install smart-timeout`
+* `yarn add smart-timeout`
+
+## Import
+
 * `import Timeout from 'smart-timeout'`
-  -or-
-  `const Timeout = require('smart-timeout');`
+* `const Timeout = require('smart-timeout');`
 
-## Methods:
-* `Timeout.set(keyName, function, millisecs = 0, param1, param2, ...)` - schedule `function` to execute after `millisecs`, identified by `keyName`
-* `Timeout.set(function, millisecs = 0, param1, param2, ...)` - same as above, except identifiable by `function` itself
-* `Timeout.exists(key)` - returns true if function has been defined and not erased, whether or not it has executed
-* `Timeout.pending(key)` - returns true if function exists and has not yet executed
-* `Timeout.remaining(key)` - returns milliseconds remaining in the countdown until execution
-* `Timeout.executed(key)` - returns true if function exists and has executed
-* `Timeout.pause(key)` - pauses a function that exists but has not yet executed
-* `Timeout.paused(key)` - returns true if function exists and is currently paused
-* `Timeout.restart(key)` - restart pending or paused timer with its original millisecs
-* `Timeout.resume(key)` - allows paused execution countdown to resume
-* `Timeout.clear(key, erase = true)` - clears a scheduled countdown; by default, knowledge of its existence is erased
+## Usage
 
-## v2 changes
+We must be able to uniquely identify every timeout. You can define an explicit, human-readable key or you can default to allowing the callback function itself to be implicitly used as its identifier.
 
-* implementation has been refactored significantly
-* `pause()`, `paused()`, `resume()` have been added - thanks to [Pedro Muller](https://github.com/pedrommuller) for the suggestion!
-* `remaining()` added - returns milliseconds remaining until execution
-* checking arguments to `set()` for a function rather than making assumptions about the params
-* added default of `0` to the `ms` parameter of `set()`
-* `restart()` added - thanks to [Roli4711](https://github.com/Roli4711) for the suggestion!
+### Static
 
-## Example 1 - a simple timeout and its status
-```
-const announce = () => {
-  console.log('!!! hello from inside announce() !!!')
-}
+* `Timeout.set(keyName, callback, millisecs = 0, param1, param2, ...)`
+  * schedule `callback` to execute after `millisecs`
+  * explicitly identify timeout by `keyName`
+  * additional params will be passed to `callback` when it is executed
+* `Timeout.set(callback, millisecs = 0, param1, param2, ...)`
+  * schedule `callback` to execute after `millisecs`
+  * implicitly identify timeout by `callback`
+  * additional params will be passed to `callback` when it is executed
+* `Timeout.exists(key)`
+  * returns true if timeout exists for `key` and is not erased, whether or not it has executed
+* `Timeout.pending(key)`
+  * returns true if timeout exists for `key` and has not yet executed
+* `Timeout.remaining(key)`
+  * returns milliseconds remaining in the countdown until the callback executes
+* `Timeout.executed(key)`
+  * returns true if timeout exists for `key` and has already executed
+* `Timeout.pause(key)`
+  * pauses the timeout identified by `key` if it exists and has not yet executed
+* `Timeout.paused(key)`
+  * returns true if timeout for `key` exists and is currently paused
+* `Timeout.restart(key)`
+  * restart the countdown with the original millisecs of a pending or paused timeout identified by `key`
+* `Timeout.resume(key)`
+  * allows the countdown of a paused timeout identified by `key` to resume
+* `Timeout.clear(key, erase = true)`
+  * clears the timeout identified by `key`
+  * by default, knowledge of its existence is erased
 
-const showStatus = () => {
-  console.log('does a timeout exist for announce()?', Timeout.exists(announce))
-  console.log('is announce pending?', Timeout.pending(announce))
-  console.log('did announce execute?', Timeout.executed(announce))
-}
+### Instantiated
 
-console.log('--- before setting the timeout. status check:')
-showStatus()
+* `Timeout.instantiate(callback, millisecs = 0, param1, param2, ...)`
+  * creates a `Timeout` instance, which can be used as a handle for the timeout
+  * this mitigates the need to pass a `key` for every method and makes transportable the management of a given timeout
+  * _note: an explicit key is not supported for an instantiated object as that would defeat its purpose_
 
-const ran = Timeout.set(announce, 1000)
+Once you have an instantiated timeout, you can use that object to execute all the static methods described above, except sans the `key` parameter.
 
-console.log('--- just set the timeout. status check:')
-showStatus()
-console.log('ran() = ', ran())
+#### Example
 
-Timeout.set(() => {
-  console.log('--- 1 second elapsed. status check:')
-  showStatus()
-  console.log('ran() = ', ran())
-  
-  Timeout.clear(announce)
-  
-  console.log('--- cleared timeout. status check:')
-  showStatus()
-  console.log('ran() = ', ran())
-  
-}, 1000)
+```js
+const timeout = Timeout.instantiate(() => { return 'foo bar' }, 1500)
+timeout.exists() // true
+timeout.executed() // false
+// now `timeout` can be passed around and managed without you having the key or callback in hand
 ```
 
-## Example 2 - event throttle
+## Example 1 - static
+
+```js
+// timeout with explicit key - useful for an anonymous callback
+Timeout.set('myTimeout', () => { doStuff() }, 1000)
+Timeout.exists('myTimeout') // true
+
+// timeout with implicit key
+Timeout.set(myCallback, 2000)
+Timeout.exists(myCallback) // true
+Timeout.remaining(myCallback) // 1999
 ```
-// use the callback as the key to set a timeout that does nothing but
-// tracks whether the timeout has executed
+
+## Example 2 - instantiate
+
+```js
+const timeout = Timeout.instantiate(() => { doSomething() }, 3000)
+timeout.exists() // true
+timeout.pause()
+```
+
+## Example 3 - throttle
+
+```js
+// use the callback as implicit key to set a timeout that strictly
+// tracks whether or not the timeout has executed
 
 const throttle = (delay, callback) =>
-    (...args) =>
-      !Timeout.pending(callback) && Timeout.set(callback, () => {}, delay)
-        ? callback.apply(this, args)
-        : null
-        
+  (...args) =>
+    !Timeout.pending(callback) && Timeout.set(callback, () => {}, delay)
+      ? callback.apply(this, args)
+      : null
+
 const onScroll = () => {
   const isScrolled = $(window).scrollTop() > 0
   $('html').toggleClass('is-scrolled', isScrolled)
@@ -104,3 +129,10 @@ const onScroll = () => {
 const onScrollThrottled = throttle(100, onScroll)
 $(window).scroll(onScrollThrottled)
 ```
+
+## Thanks!
+
+* `pause()`, `paused()`, `resume()` - thanks to [Pedro Muller](https://github.com/pedrommuller) for the suggestion!
+* `restart()` - thanks to [Roli4711](https://github.com/Roli4711) for the suggestion!
+* `instantiate()` - thanks to [Alec Hirsch](https://github.com/alechirsch) for the idea!
+
