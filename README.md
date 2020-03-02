@@ -22,7 +22,7 @@ The `setTimeout()` and `clearTimeout()` primitives are fine for basic functional
 * check if a timeout has already executed
 * pause a pending timeout's countdown
 * determine the number of milliseconds remaining in a timeout's countdown
-* restart a timeout, whether pending or already executed
+* restart a countdown in progress
 
 Checkout the examples below. You can also play around with a demo at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde) and read a little more at [this Medium article](https://hackernoon.com/smarter-javascript-timeouts-24308f3be5ab).
 
@@ -43,12 +43,12 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
 ### Static
 
 * `Timeout.set(keyName, callback, millisecs = 0, param1, param2, ...)`
-  * schedule `callback` to execute after `millisecs`
   * explicitly identify timeout by `keyName`
+  * schedule `callback` to execute after `millisecs`
   * additional params will be passed to `callback` when it is executed
 * `Timeout.set(callback, millisecs = 0, param1, param2, ...)`
-  * schedule `callback` to execute after `millisecs`
   * implicitly identify timeout by `callback`
+  * schedule `callback` to execute after `millisecs`
   * additional params will be passed to `callback` when it is executed
 * `Timeout.exists(key)`
   * returns true if timeout exists for `key` and is not erased, whether or not it has executed
@@ -77,7 +77,7 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * this mitigates the need to pass a `key` for every method and makes transportable the management of a given timeout
   * _note: an explicit key is not supported for an instantiated object as that would defeat its purpose_
 
-Once you have an instantiated timeout, you can use that object to execute all the static methods described above, except sans the `key` parameter.
+Once you have an instantiated timeout, you can use that object to execute all the static methods described above, except without a `key` parameter.
 
 #### Example
 
