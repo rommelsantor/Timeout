@@ -25,11 +25,11 @@ const Timeout = (() => {
       throw Error('Timeout.set() requires at least one argument')
     }
 
-    if (typeof args[0] === 'function') {
+    if (typeof args[1] === 'function') {
+      [key, func, ms, ...params] = args
+    } else {
       [func, ms, ...params] = args;
       key = func.toString()
-    } else {
-      [key, func, ms, ...params] = args
     }
 
     if (!func) {
@@ -66,6 +66,24 @@ const Timeout = (() => {
 
   // timeout has been created
   const exists = key => key in keyId || metadata[key] !== undefined;
+
+  // same as set() except returns false if timeout already exists
+  const create = (...args) => {
+    if (args.length === 0) {
+      throw Error('Timeout.create() requires at least one argument')
+    }
+
+    let key;
+
+    if (typeof args[1] === 'function') {
+      [key] = args
+    } else {
+      const [func] = args;
+      key = func.toString()
+    }
+
+    return exists(key) ? false : set(...args)
+  };
 
   // test if a timeout has run
   const executed = key => metadata[key] === false;
@@ -126,17 +144,43 @@ const Timeout = (() => {
     return set(key, func, originalMs[key], ...params)
   };
 
+  const instantiate = (ctorFunc, ctorMs = 0, ...ctorCallbackParams) => {
+    if (!ctorFunc) {
+      throw Error('Timeout.instantiate() requires a function parameter')
+    }
+
+    const key = `${Math.random()}${ctorFunc}`.replace(/\s/g, '');
+
+    set(key, ctorFunc, ctorMs, ...ctorCallbackParams);
+
+    return {
+      clear: (erase = true) => clear(key, erase),
+      executed: () => executed(key),
+      exists: () => exists(key),
+      pause: () => pause(key),
+      paused: () => paused(key),
+      pending: () => pending(key),
+      remaining: () => remaining(key),
+      restart: () => restart(key),
+      resume: () => resume(key),
+      lastExecuted: () => lastExecuted(key),
+      set: (newFunc, newMs = 0, ...newParams) => set(key, newFunc, newMs, ...newParams),
+    }
+  };
+
   return {
     clear,
+    create,
     executed,
     exists,
-    lastExecuted,
+    instantiate,
     pause,
     paused,
     pending,
     remaining,
     restart,
     resume,
+    lastExecuted,
     set,
   }
 })();
