@@ -92,11 +92,14 @@ function my_timer_with_params(param1, param2, param3) {
   assert(typeof param3 === 'undefined', 'my_timer_with_params param3 should be UNdefined');
 }
 
+console.log('Ensuring create() will not clobber an existing timeout');
+Timeout.set('no-clobber', function() { console.log('did not clobber') }, 0);
+assert(false === Timeout.create('no-clobber', function() { console.log('did not clobber') }, 0));
+
 console.log('Setting my_timer_with_params to execute in 0 ms with two parameters: "Foo" and "Bar"');
 Timeout.set(my_timer_with_params, 0, 'Foo', 'Bar');
 
 console.log('Setting my_timer to execute in 3 seconds.');
-
 Timeout.set('my_timer', my_timer, 3000);
 
 console.log('Does my_timer exist?', Timeout.exists('my_timer'));
@@ -115,3 +118,24 @@ Timeout.set(unpause_my_timer, 400);
 
 console.log('Setting pause_my_timer to execute in 200 milliseconds.');
 Timeout.set(pause_my_timer, 200);
+
+//
+// test instantiated object
+//
+
+console.log('-----');
+console.log('Instantiating with my_timer_with_params to execute in 3 seconds.');
+
+const obj = Timeout.instantiate(my_timer_with_params, 2000, 'Abc', 'Xyz')
+
+console.log('Does my_timer_with_params exist?', obj.exists());
+assert(obj.exists(), 'my_timer_with_params should exist');
+
+console.log('Is my_timer_with_params pending?', obj.pending());
+assert(obj.pending(), 'my_timer_with_params should be pending');
+
+console.log('Has my_timer_with_params executed?', obj.executed());
+assert(!obj.executed(), 'my_timer_with_params should not yet have executed');
+
+console.log('Time remaining before executing my_timer_with_params:', obj.remaining(), 'ms');
+
