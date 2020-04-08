@@ -58,6 +58,24 @@ const Timeout = (() => {
   // timeout has been created
   const exists = key => key in keyId || metadata[key] !== undefined
 
+  // same as set() except returns false if timeout already exists
+  const create = (...args) => {
+    if (args.length === 0) {
+      throw Error('Timeout.create() requires at least one argument')
+    }
+
+    let key
+
+    if (typeof args[1] === 'function') {
+      [key] = args
+    } else {
+      const [func] = args
+      key = func.toString()
+    }
+
+    return exists(key) ? false : set(...args)
+  }
+
   // test if a timeout has run
   const executed = key => metadata[key] === false
 
@@ -139,6 +157,7 @@ const Timeout = (() => {
 
   return {
     clear,
+    create,
     executed,
     exists,
     instantiate,

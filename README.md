@@ -50,6 +50,9 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * implicitly identify timeout by `callback`
   * schedule `callback` to execute after `millisecs`
   * additional params will be passed to `callback` when it is executed
+* `Timeout.create(...)`
+  * identical to `set()` above, except will only create if timeout does not yet exist
+  * if timeout already does exist, nothing is created and will return `false`
 * `Timeout.exists(key)`
   * returns true if timeout exists for `key` and is not erased, whether or not it has executed
 * `Timeout.pending(key)`
