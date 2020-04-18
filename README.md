@@ -52,8 +52,8 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * schedule `callback` to execute after `millisecs`
   * additional params will be passed to `callback` when it is executed
 * `Timeout.create(...)`
-  * identical to `set()` above, except will only create if timeout does not yet exist
-  * if timeout already does exist, nothing is created and will return `false`
+  * identical to `set()` above, except it will only set the timeout if the `key` does not yet exist
+  * returns false without creating timeout if timeout does already exist
 * `Timeout.exists(key)`
   * returns true if timeout exists for `key` and is not erased, whether or not it has executed
 * `Timeout.pending(key)`
@@ -62,6 +62,8 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * returns milliseconds remaining in the countdown until the callback executes
 * `Timeout.executed(key)`
   * returns true if timeout exists for `key` and has already executed
+* `Timeout.lastExecuted(key)`
+  * returns a Date object of the last time the timeout for `key` executed
 * `Timeout.pause(key)`
   * pauses the timeout identified by `key` if it exists and has not yet executed
 * `Timeout.paused(key)`
@@ -73,8 +75,6 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
 * `Timeout.clear(key, erase = true)`
   * clears the timeout identified by `key`
   * by default, knowledge of its existence is erased
-* `Timeout.lastExecuted(key)`
-  * returns the timestamp (Date object) of the execution of the timeout
 
 ### Instantiated
 
@@ -141,4 +141,5 @@ $(window).scroll(onScrollThrottled)
 * `pause()`, `paused()`, `resume()` - thanks to [Pedro Muller](https://github.com/pedrommuller) for the suggestion!
 * `restart()` - thanks to [Roli4711](https://github.com/Roli4711) for the suggestion!
 * `instantiate()` - thanks to [Alec Hirsch](https://github.com/alechirsch) for the idea!
+* Thanks to [Marcus Calidus](https://github.com/MarcusCalidus) for converting to TypeScript and adding `lastExecuted()`!
 

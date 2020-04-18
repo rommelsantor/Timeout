@@ -1,18 +1,22 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-        "trailing-comma": [ false ],
-        "no-console": false,
-        "no-bitwise": false,
-        "max-classes-per-file": false,
-        "no-namespace": false,
-        "quotemark": {
-            "options": "single"
-        }
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "rules": {
+    "eofline": true, 
+    "indent": [true, "spaces", 2],
+    "no-bitwise": false,
+    "no-console": false,
+    "no-namespace": false,
+    "max-classes-per-file": false,
+    "quotemark": {
+      "options": "single"
     },
-    "rulesDirectory": []
+    "semicolon": [true, "never"],
+    "trailing-comma": [false],
+    "whitespace": [true, "check-module"]
+  },
+  "rulesDirectory": []
 }

@@ -1,22 +1,22 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "target": "es6",
-        "declaration": true,
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "node_modules/*"
-            ]
-        }
-    },
-    "files": [
-        "src/index.ts",
-        "src/lib/timeout.ts"
-    ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "declaration": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
+  },
+  "files": [
+    "src/index.ts",
+    "src/lib/timeout.ts"
+  ]
 }
