@@ -23,6 +23,7 @@ The `setTimeout()` and `clearTimeout()` primitives are fine for basic functional
 * pause a pending timeout's countdown
 * determine the number of milliseconds remaining in a timeout's countdown
 * restart a countdown in progress
+* get the exact timestamp when the execution occurred
 
 Checkout the examples below. You can also play around with a demo at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde) and read a little more at [this Medium article](https://hackernoon.com/smarter-javascript-timeouts-24308f3be5ab).
 
@@ -72,6 +73,8 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
 * `Timeout.clear(key, erase = true)`
   * clears the timeout identified by `key`
   * by default, knowledge of its existence is erased
+* `Timeout.lastExecuted(key)`
+  * returns the timestamp (Date object) of the execution of the timeout
 
 ### Instantiated
 

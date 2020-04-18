@@ -1,39 +1,35 @@
 {
-  "name": "smart-timeout",
-  "version": "2.2.1",
-  "description": "Timers with Cleared, Pending, Executed, & Paused States",
-  "main": "index.js",
-  "scripts": {
-    "compile": "npx babel --presets @babel/preset-env src --out-dir lib",
-    "test": "node test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rommelsantor/Timeout.git"
-  },
-  "keywords": [
-    "timeout",
-    "setTimeout",
-    "delay",
-    "wait",
-    "pause",
-    "resume",
-    "cancel",
-    "timer"
-  ],
-  "author": "Rommel Santor",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/rommelsantor/Timeout/issues"
-  },
-  "homepage": "https://github.com/rommelsantor/Timeout#readme",
-  "devDependencies": {
-    "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.4.3"
-  },
-  "dependencies": {},
-  "jest": {
-    "verbose": true
-  }
+    "name": "smart-timeout",
+    "version": "2.2.1",
+    "description": "Timers with Cleared, Pending, Executed, & Paused States",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc -p .",
+        "test": "node test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rommelsantor/Timeout.git"
+    },
+    "keywords": [
+        "timeout",
+        "setTimeout",
+        "delay",
+        "wait",
+        "pause",
+        "resume",
+        "cancel",
+        "timer"
+    ],
+    "author": "Rommel Santor",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/rommelsantor/Timeout/issues"
+    },
+    "homepage": "https://github.com/rommelsantor/Timeout#readme",
+    "devDependencies": {
+        "tslint": "^6.1.1",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {}
 }
