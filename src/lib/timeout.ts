@@ -29,6 +29,20 @@ interface Metadata {
   [key: string]: MetadataRecord
 }
 
+export interface TimeoutInstance {
+  clear: (erase?: boolean) => void;
+  executed: () => boolean;
+  exists: () => boolean;
+  lastExecuted: () => Date;
+  pause: () => number | boolean;
+  paused: () => boolean;
+  pending: () => boolean;
+  remaining: () => number;
+  restart: () => boolean | Checker;
+  resume: () => boolean | Checker;
+  set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => Checker;
+}
+
 export class Timeout {
   private static keyId: KeyId = {}
   private static originalMs: OriginalMs = {}
@@ -258,7 +272,7 @@ export class Timeout {
    * @param ms
    * @param params
    */
-  static instantiate(callback: Callback, ms: number = 0, ...params: any[]) {
+  static instantiate(callback: Callback, ms: number = 0, ...params: any[]): TimeoutInstance {
     if (!callback) {
       throw Error('Timeout.instantiate() requires a function parameter')
     }

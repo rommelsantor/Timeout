@@ -75,6 +75,8 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
 * `Timeout.clear(key, erase = true)`
   * clears the timeout identified by `key`
   * by default, knowledge of its existence is erased
+* `Timeout.lastExecuted(key)`
+  * returns the timestamp (Date object) of the execution of the timeout
 
 ### Instantiated
 
