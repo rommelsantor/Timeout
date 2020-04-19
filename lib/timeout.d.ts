@@ -42,6 +42,11 @@ export declare class Timeout {
      */
     static create(callback: Callback, ms: number, ...params: any[]): boolean | Checker;
     /**
+     * timeout has been created
+     * @param key
+     */
+    static exists(key: string): boolean;
+    /**
      * test if a timeout has run
      * @param key
      */
@@ -57,20 +62,30 @@ export declare class Timeout {
      */
     static pending(key: string): boolean;
     /**
-     * timeout has been created
+     * timeout does exist, but will not execute because it is paused
      * @param key
      */
-    static exists(key: string): boolean;
+    static paused(key: string): boolean;
     /**
      * remaining time until timeout will occur
      * @param key
      */
     static remaining(key: string): number;
     /**
-     * timeout does exist, but will not execute because it is paused
+     * restart timeout with original time
      * @param key
      */
-    static paused(key: string): boolean;
+    static restart(key: string): boolean | Checker;
+    /**
+     * pause our execution countdown until we're ready for it to resume
+     * @param key
+     */
+    static pause(key: string): boolean | number;
+    /**
+     * resume paused Timeout with the remaining time
+     * @param key
+     */
+    static resume(key: string): boolean | Checker;
     /**
      * instantiate timeout to handle as object
      * @param callback
@@ -90,20 +105,5 @@ export declare class Timeout {
         resume: () => boolean | Checker;
         set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => Checker;
     };
-    /**
-     * restart timeout with original time
-     * @param key
-     */
-    static restart(key: string): boolean | Checker;
-    /**
-     * pause our execution countdown until we're ready for it to resume
-     * @param key
-     */
-    static pause(key: string): boolean | number;
-    /**
-     * resume paused Timeout with the remaining time
-     * @param key
-     */
-    static resume(key: string): boolean | Checker;
 }
 export {};

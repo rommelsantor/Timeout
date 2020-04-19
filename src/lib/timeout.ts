@@ -207,7 +207,7 @@ export class Timeout {
 
     Timeout.clear(key, false)
 
-    if (Timeout.paused) {
+    if (metaDataRecord.paused) {
       metaDataRecord.paused = false
     }
 
@@ -242,8 +242,14 @@ export class Timeout {
 
     if (!metaDataRecord.paused) return false
 
+    const originalMs = Timeout.originalMs[key]
     const remainingTime = metaDataRecord.ms - metaDataRecord.timeSpentWaiting
-    return Timeout.set(key, metaDataRecord.callback, remainingTime, ...metaDataRecord.params)
+
+    const result = Timeout.set(key, metaDataRecord.callback, remainingTime, ...metaDataRecord.params)
+
+    Timeout.originalMs[key] = originalMs
+
+    return result
   }
 
   /**
