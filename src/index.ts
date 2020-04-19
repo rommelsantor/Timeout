@@ -1,3 +1,2 @@
-import {Timeout} from './lib/timeout';
-
-export default Timeout;
+import { Timeout } from './lib/timeout'
+export default Timeout

@@ -1,10 +1,11 @@
 declare type Callback = (...params: any[]) => void;
+declare type Checker = () => boolean;
 export declare class Timeout {
     private static keyId;
     private static originalMs;
     private static metadata;
     /**
-     * clear timeout with optionally erasing any info about it
+     * clear timeout and optionally erase all knowledge of its existence
      * @param key
      * @param erase
      */
@@ -16,15 +17,15 @@ export declare class Timeout {
      * @param ms
      * @param params
      */
-    static set(key: string, callback: Callback, ms: number, ...params: any[]): boolean;
+    static set(key: string, callback: Callback, ms: number, ...params: any[]): Checker;
     /**
      * returns a function allowing you to test if it has executed
      * @param callback
      * @param ms
      * @param params
      */
-    static set(callback: Callback, ms: number, ...params: any[]): boolean;
-    static set(...args: any[]): boolean;
+    static set(callback: Callback, ms: number, ...params: any[]): Checker;
+    static set(...args: any[]): Checker;
     /**
      * same as set() except returns false if timeout already exists
      * @param key
@@ -32,14 +33,19 @@ export declare class Timeout {
      * @param ms
      * @param params
      */
-    static create(key: string, callback: Callback, ms: number, ...params: any[]): boolean;
+    static create(key: string, callback: Callback, ms: number, ...params: any[]): boolean | Checker;
     /**
      * same as set() except returns false if timeout already exists
      * @param callback
      * @param ms
      * @param params
      */
-    static create(callback: Callback, ms: number, ...params: any[]): boolean;
+    static create(callback: Callback, ms: number, ...params: any[]): boolean | Checker;
+    /**
+     * timeout has been created
+     * @param key
+     */
+    static exists(key: string): boolean;
     /**
      * test if a timeout has run
      * @param key
@@ -56,44 +62,20 @@ export declare class Timeout {
      */
     static pending(key: string): boolean;
     /**
-     * timeout has been created
+     * timeout does exist, but will not execute because it is paused
      * @param key
      */
-    static exists(key: string): boolean;
+    static paused(key: string): boolean;
     /**
      * remaining time until timeout will occur
      * @param key
      */
     static remaining(key: string): number;
     /**
-     * timeout does exist, but will not execute because it is paused
-     * @param key
-     */
-    static paused(key: string): boolean;
-    /**
-     * instanciate timeout to handle as object
-     * @param callback
-     * @param ms
-     * @param params
-     */
-    static instantiate(callback: Callback, ms?: number, ...params: any[]): {
-        clear: (erase?: boolean) => void;
-        executed: () => boolean;
-        exists: () => boolean;
-        pause: () => number | boolean;
-        paused: () => boolean;
-        pending: () => boolean;
-        remaining: () => number;
-        restart: () => boolean;
-        resume: () => boolean;
-        lastExecuted: () => Date;
-        set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => boolean;
-    };
-    /**
      * restart timeout with original time
      * @param key
      */
-    static restart(key: string): boolean;
+    static restart(key: string): boolean | Checker;
     /**
      * pause our execution countdown until we're ready for it to resume
      * @param key
@@ -103,6 +85,25 @@ export declare class Timeout {
      * resume paused Timeout with the remaining time
      * @param key
      */
-    static resume(key: string): boolean;
+    static resume(key: string): boolean | Checker;
+    /**
+     * instantiate timeout to handle as object
+     * @param callback
+     * @param ms
+     * @param params
+     */
+    static instantiate(callback: Callback, ms?: number, ...params: any[]): {
+        clear: (erase?: boolean) => void;
+        executed: () => boolean;
+        exists: () => boolean;
+        lastExecuted: () => Date;
+        pause: () => number | boolean;
+        paused: () => boolean;
+        pending: () => boolean;
+        remaining: () => number;
+        restart: () => boolean | Checker;
+        resume: () => boolean | Checker;
+        set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => Checker;
+    };
 }
 export {};
