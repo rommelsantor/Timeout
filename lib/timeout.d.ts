@@ -1,5 +1,18 @@
 declare type Callback = (...params: any[]) => void;
 declare type Checker = () => boolean;
+export interface TimeoutInstance {
+    clear: (erase?: boolean) => void;
+    executed: () => boolean;
+    exists: () => boolean;
+    lastExecuted: () => Date;
+    pause: () => number | boolean;
+    paused: () => boolean;
+    pending: () => boolean;
+    remaining: () => number;
+    restart: () => boolean | Checker;
+    resume: () => boolean | Checker;
+    set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => Checker;
+}
 export declare class Timeout {
     private static keyId;
     private static originalMs;
@@ -92,18 +105,6 @@ export declare class Timeout {
      * @param ms
      * @param params
      */
-    static instantiate(callback: Callback, ms?: number, ...params: any[]): {
-        clear: (erase?: boolean) => void;
-        executed: () => boolean;
-        exists: () => boolean;
-        lastExecuted: () => Date;
-        pause: () => number | boolean;
-        paused: () => boolean;
-        pending: () => boolean;
-        remaining: () => number;
-        restart: () => boolean | Checker;
-        resume: () => boolean | Checker;
-        set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => Checker;
-    };
+    static instantiate(callback: Callback, ms?: number, ...params: any[]): TimeoutInstance;
 }
 export {};
