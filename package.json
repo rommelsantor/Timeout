@@ -1,6 +1,6 @@
 {
     "name": "smart-timeout",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "description": "Timers with Cleared, Pending, Executed, & Paused States",
     "main": "index.js",
     "scripts": {
@@ -19,7 +19,8 @@
         "pause",
         "resume",
         "cancel",
-        "timer"
+        "timer",
+        "typescript"
     ],
     "author": "Rommel Santor",
     "license": "MIT",

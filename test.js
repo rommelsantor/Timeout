@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Timeout = require('.').default
+const Timeout = require('.')
 
 const VERBOSE = false
 
@@ -189,4 +189,6 @@ log('Has my_timer_with_params executed?', obj.executed())
 assert(!obj.executed(), 'my_timer_with_params should not yet have executed')
 
 log('Time remaining before executing my_timer_with_params:', obj.remaining(), 'ms')
+
+console.log('tests complete.')
 
