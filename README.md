@@ -52,8 +52,9 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * schedule `callback` to execute after `millisecs`
   * additional params will be passed to `callback` when it is executed
 * `Timeout.create(...)`
-  * identical to `set()` above, except it will only set the timeout if the `key` does not yet exist
-  * returns false without creating timeout if timeout does already exist
+  * identical to `set()` above, except it will not set the timeout if `key` already exists
+  * returns `false` without setting the timeout if a timeout for `key` exists (whether or not it has executed)
+  * note: `clear()` must be called to `create()` the same timeout again
 * `Timeout.exists(key)`
   * returns true if timeout exists for `key` and is not erased, whether or not it has executed
 * `Timeout.pending(key)`
@@ -115,25 +116,69 @@ timeout.exists() // true
 timeout.pause()
 ```
 
-## Example 3 - throttle
+### Example 3 - create
+
+Scenario: one or more files can be uploaded concurrently. Callback executes after each file upload completes.
+
+If all uploads finish, we want to refetch the list of files immediately to reflect the newly uploaded files.
+
+If there are several files that complete sequentially, we don't want to keep refetching the file list,
+but we also don't want the file list to just wait and get stale if one big upload take a long time, so if other
+uploads are still in progress wait 1500ms then refetch.
+
+The effect is either we'll refetch when the last upload completes or we'll refetch at most once every 1500ms
+after a file completes while other uploads continue.
 
 ```js
-// use the callback as implicit key to set a timeout that strictly
-// tracks whether or not the timeout has executed
+// called when a single upload finishes (whether or not there are still others in progress)
+function onFinishUploadingSingleFile() {
+  const refetchTimeoutKey = 'concurrent-refetch-after-upload'
 
-const throttle = (delay, callback) =>
+  // this was the last upload in progress - refetch the file list immediately
+  if (totalFilesStillUploading === 0) {
+    api.refetch('/files-list')
+
+    // kill any scheduled concurrent refetch; it's no longer necessary,
+    // and we need to allow it to run again
+    Timeout.clear(refetchTimeoutKey)
+  } else {
+    // this means we *will* execute the timeout callback once and only once
+    // in 1500ms (unless clear() is called), even with other uploads still in progress
+    Timeout.create(
+      refetchTimeoutKey,
+      () => {
+        // we timed out, so refetch the list, even with other files still uploading
+        api.refetch('/files-list')
+
+        // be sure to clear() or this next Timeout.create() will fail
+        Timeout.clear(refetchTimeoutKey)
+      },
+      1500
+    )
+  }
+}
+```
+
+## Example 4 - throttle DOM events
+
+```js
+// use the callback as implicit key to set a timeout that itself executes nothing;
+// it just tracks whether or not the callback has executed
+
+const noop = () => {}
+
+const throttle = (callback, delay) =>
   (...args) =>
-    !Timeout.pending(callback) && Timeout.set(callback, () => {}, delay)
-      ? callback.apply(this, args)
-      : null
+    !Timeout.pending(callback) &&
+    Timeout.set(callback, noop, delay) &&
+    callback(...args)
 
 const onScroll = () => {
-  const isScrolled = $(window).scrollTop() > 0
-  $('html').toggleClass('is-scrolled', isScrolled)
+  // do something with the scroll position
 }
 
-const onScrollThrottled = throttle(100, onScroll)
-$(window).scroll(onScrollThrottled)
+const onScrollThrottled = throttle(onScroll, 100)
+document.addEventListener('scroll', onScrollThrottled)
 ```
 
 ## Thanks!
