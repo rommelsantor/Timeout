@@ -116,7 +116,7 @@ timeout.exists() // true
 timeout.pause()
 ```
 
-### Example 3 - create
+## Example 3 - create
 
 Scenario: one or more files can be uploaded concurrently. Callback executes after each file upload completes.
 
@@ -130,7 +130,8 @@ The effect is either we'll refetch when the last upload completes or we'll refet
 after a file completes while other uploads continue.
 
 ```js
-// called when a single upload finishes (whether or not there are still others in progress)
+// called when a single upload finishes (whether or not
+// there are still others in progress)
 function onFinishUploadingSingleFile() {
   const refetchTimeoutKey = 'concurrent-refetch-after-upload'
 
@@ -142,12 +143,12 @@ function onFinishUploadingSingleFile() {
     // and we need to allow it to run again
     Timeout.clear(refetchTimeoutKey)
   } else {
-    // this means we *will* execute the timeout callback once and only once
-    // in 1500ms (unless clear() is called), even with other uploads still in progress
+    // we *will* execute the timeout callback once and only once in 1500ms
+    // (unless clear() is called), even with other uploads still in progress
     Timeout.create(
       refetchTimeoutKey,
       () => {
-        // we timed out, so refetch the list, even with other files still uploading
+        // timed out, so refetch, even with other files still uploading
         api.refetch('/files-list')
 
         // be sure to clear() or this next Timeout.create() will fail
@@ -162,8 +163,8 @@ function onFinishUploadingSingleFile() {
 ## Example 4 - throttle DOM events
 
 ```js
-// use the callback as implicit key to set a timeout that itself executes nothing;
-// it just tracks whether or not the callback has executed
+// use the callback as implicit key to set a timeout that itself executes
+// nothing; it just tracks whether or not the callback has executed
 
 const noop = () => {}
 
