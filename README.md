@@ -55,6 +55,9 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * identical to `set()` above, except it will not set the timeout if `key` already exists
   * returns `false` without setting the timeout if a timeout for `key` exists (whether or not it has executed)
   * note: `clear()` must be called to `create()` the same timeout again
+* `Timeout.call(key)`
+  * independently fires an existing callback without affecting any pending/executed/etc. meta state
+  * returns false if `key` does not exist
 * `Timeout.exists(key)`
   * returns true if timeout exists for `key` and is not erased, whether or not it has executed
 * `Timeout.pending(key)`
