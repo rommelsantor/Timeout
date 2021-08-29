@@ -4,7 +4,7 @@
     "description": "Timers with Cleared, Pending, Executed, & Paused States",
     "main": "index.js",
     "scripts": {
-        "build": "tsc -p .",
+        "build": "tsc -p . && git checkout HEAD -- index.d.ts index.js",
         "test": "node test.js"
     },
     "repository": {

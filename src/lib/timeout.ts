@@ -6,6 +6,10 @@ interface KeyId {
   [key: string]: any
 }
 
+interface Caller {
+  [key: string]: Callback
+}
+
 interface OriginalMs {
   [key: string]: number
 }
@@ -30,6 +34,7 @@ interface Metadata {
 }
 
 export interface TimeoutInstance {
+  call: () => any;
   clear: (erase?: boolean) => void;
   executed: () => boolean;
   exists: () => boolean;
@@ -45,6 +50,7 @@ export interface TimeoutInstance {
 
 export class Timeout {
   private static keyId: KeyId = {}
+  private static keyCall: Caller = {}
   private static originalMs: OriginalMs = {}
   private static metadata: Metadata = {}
 
@@ -56,6 +62,7 @@ export class Timeout {
   static clear(key: string, erase: boolean = true) {
     clearTimeout(Timeout.keyId[key])
     delete Timeout.keyId[key]
+    delete Timeout.keyCall[key]
 
     if (erase) {
       delete Timeout.metadata[key]
@@ -108,6 +115,7 @@ export class Timeout {
     }
 
     Timeout.keyId[key] = setTimeout(invoke, ms || 0)
+    Timeout.keyCall[key] = () => callback(...params)
     Timeout.originalMs[key] = Timeout.originalMs[key] || ms
 
     Timeout.metadata[key] = new MetadataRecord(
@@ -158,6 +166,15 @@ export class Timeout {
    */
   static exists(key: string): boolean {
     return key in Timeout.keyId || (Timeout.metadata)[key] !== undefined
+  }
+
+  /**
+   * fire the callback on demand, without affecting the timeout or meta data (execution time)
+   * @param key
+   * @returns {(false|any)} false if timeout does not exist or the return value of the callback
+   */
+  static call(key: string): any {
+    return Timeout.exists(key) && (Timeout.keyCall)[key]()
   }
 
   /**
@@ -282,6 +299,7 @@ export class Timeout {
     Timeout.set(key, callback, ms, ...params)
 
     return {
+      call: () => Timeout.call(key),
       clear: (erase = true) => Timeout.clear(key, erase),
       executed: () => Timeout.executed(key),
       exists: () => Timeout.exists(key),
@@ -296,4 +314,3 @@ export class Timeout {
     }
   }
 }
-

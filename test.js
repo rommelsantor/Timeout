@@ -3,6 +3,8 @@ const Timeout = require('.')
 
 const VERBOSE = false
 
+assert(typeof Timeout.set === 'function', 'Timeout should have been imported correctly from index.js')
+
 function log(/* ... */) {
   if (!VERBOSE) return
 
@@ -11,6 +13,10 @@ function log(/* ... */) {
 
 function isAround(actual, expected) {
   return actual >= expected - 1 && actual <= expected + 1
+}
+
+function manually_called() {
+  return 'i was manually called'
 }
 
 function my_timer(param1, param2, param3) {
@@ -51,6 +57,8 @@ function my_timer(param1, param2, param3) {
   log('Time remaining before executing my_timer:', Timeout.remaining('my_timer'), 'ms')
 
   log('-----')
+
+  return 'executed my_timer'
 }
 
 function pause_my_timer() {
@@ -103,6 +111,18 @@ function my_timer_with_params(param1, param2, param3) {
   log('* my_timer_with_params got param3:', param3)
   assert(typeof param3 === 'undefined', 'my_timer_with_params param3 should be UNdefined')
 }
+
+Timeout.set('manually_called', manually_called, 100)
+assert(Timeout.exists('manually_called'), 'manually_called should exist')
+assert(Timeout.pending('manually_called'), 'manually_called should be pending')
+assert(!Timeout.executed('manually_called'), 'manually_called should be flagged as not yet executed')
+
+let callResult
+log('One-off execution of the manually_called callback does not affect existing timeout', callResult = Timeout.call('manually_called'))
+assert(callResult === 'i was manually called', 'manually_called\'s return value should have been received, but got: ' + callResult)
+assert(Timeout.exists('manually_called'), 'manually_called should still exist')
+assert(Timeout.pending('manually_called'), 'manually_called should still be pending')
+assert(!Timeout.executed('manually_called'), 'manually_called should still be flagged as not yet executed')
 
 log('Ensuring create() will not clobber an existing timeout')
 Timeout.set('no-clobber', function() { log('did not clobber') }, 0)

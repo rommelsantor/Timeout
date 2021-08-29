@@ -1,6 +1,7 @@
 declare type Callback = (...params: any[]) => void;
 declare type Checker = () => boolean;
 export interface TimeoutInstance {
+    call: () => any;
     clear: (erase?: boolean) => void;
     executed: () => boolean;
     exists: () => boolean;
@@ -15,6 +16,7 @@ export interface TimeoutInstance {
 }
 export declare class Timeout {
     private static keyId;
+    private static keyCall;
     private static originalMs;
     private static metadata;
     /**
@@ -59,6 +61,12 @@ export declare class Timeout {
      * @param key
      */
     static exists(key: string): boolean;
+    /**
+     * fire the callback on demand, without affecting the timeout or meta data (execution time)
+     * @param key
+     * @returns {(false|any)} false if timeout does not exist or the return value of the callback
+     */
+    static call(key: string): any;
     /**
      * test if a timeout has run
      * @param key
