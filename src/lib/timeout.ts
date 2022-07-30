@@ -36,13 +36,16 @@ interface Metadata {
 export interface TimeoutInstance {
   call: () => any;
   clear: (erase?: boolean) => void;
+  elapsed: () => number;
   executed: () => boolean;
   exists: () => boolean;
   lastExecuted: () => Date;
+  meta: () => MetadataRecord;
   pause: () => number | boolean;
   paused: () => boolean;
   pending: () => boolean;
   remaining: () => number;
+  reset: (ms: number, ...params: any[]) => boolean | Checker;
   restart: () => boolean | Checker;
   resume: () => boolean | Checker;
   set: (newCallback: Callback, newMs?: number, ...newParams: any[]) => Checker;
@@ -161,6 +164,18 @@ export class Timeout {
   }
 
   /**
+   * elapsed time since the timeout was created
+   * @param key
+   */
+  static elapsed(key: string): number {
+    const metaDataRecord = Timeout.metadata[key]
+
+    if (!metaDataRecord) return 0
+
+    return Math.max(0, new Date().getTime() - metaDataRecord.startTime)
+  }
+
+  /**
    * timeout has been created
    * @param key
    */
@@ -196,6 +211,14 @@ export class Timeout {
   }
 
   /**
+   * metadata about a timeout
+   * @param key
+   */
+  static meta(key: string): MetadataRecord {
+    return Timeout.metadata[key]
+  }
+
+  /**
    * timeout does exist, but has not yet run
    * @param key
    */
@@ -228,11 +251,37 @@ export class Timeout {
   }
 
   /**
+   * set timeout anew, optionally with new time and params
+   * @param key
+   * @param ms new millisecs before execution
+   * @param params new parameters to callback
+   */
+  static reset(key: string, ms: number, ...params: any[]): boolean | Checker {
+    const metaDataRecord = Timeout.metadata[key]
+
+    if (!metaDataRecord) return false
+
+    Timeout.clear(key, false)
+
+    if (metaDataRecord.paused) {
+      metaDataRecord.paused = false
+    }
+
+    return Timeout.set(
+      key,
+      metaDataRecord.callback,
+      ms ?? Timeout.originalMs[key],
+      ...(params || metaDataRecord.params),
+    )
+  }
+
+  /**
    * restart timeout with original time
    * @param key
+   * @param force restart even even if not yet executed
    */
-  static restart(key: string): boolean | Checker {
-    if (!Timeout.metadata[key] || Timeout.executed(key)) return false
+  static restart(key: string, force: boolean = false): boolean | Checker {
+    if (!Timeout.metadata[key] || (!force && Timeout.executed(key))) return false
 
     const metaDataRecord = Timeout.metadata[key]
 
@@ -285,29 +334,73 @@ export class Timeout {
 
   /**
    * instantiate timeout to handle as object
+   * @param key
    * @param callback
    * @param ms
    * @param params
    */
-  static instantiate(callback: Callback, ms: number = 0, ...params: any[]): TimeoutInstance {
+  static instantiate(key: string, callback: Callback, ms: number, ...params: any[]): TimeoutInstance
+  /**
+   * instantiate timeout to handle as object
+   * @param callback
+   * @param ms
+   * @param params
+   */
+  static instantiate(callback: Callback, ms: number, ...params: any[]): TimeoutInstance
+  static instantiate(...args: any[]): TimeoutInstance
+  static instantiate(...args: any[]): TimeoutInstance {
+    let key: string
+    let ms: number
+    let params: any[]
+    let callback: Callback
+
+    if (args.length === 0) {
+      throw Error('Timeout.set() requires at least one argument')
+    }
+
+    const linkToExisting: boolean = args.length === 1 && typeof args[0] !== 'function'
+
+    // hooking up to an existing timeout
+    if (linkToExisting) {
+      [key] = args
+
+      const metadata: MetadataRecord = Timeout.meta(key)
+
+      if (!metadata) {
+        throw Error('Timeout.instantiate() attempted to link to nonexistent object by key')
+      }
+
+      ms = metadata.ms
+      params = metadata.params
+      callback = metadata.callback
+    } else if (typeof args[1] === 'function') {
+      [key, callback, ms, ...params] = args
+    } else {
+      [callback, ms, ...params] = args
+      key = `${Math.random()}${callback}`.replace(/\s/g, '')
+    }
+
     if (!callback) {
       throw Error('Timeout.instantiate() requires a function parameter')
     }
 
-    const key = `${Math.random()}${callback}`.replace(/\s/g, '')
-
-    Timeout.set(key, callback, ms, ...params)
+    if (!linkToExisting) {
+      Timeout.set(key, callback, ms, ...params)
+    }
 
     return {
       call: () => Timeout.call(key),
       clear: (erase = true) => Timeout.clear(key, erase),
+      elapsed: () => Timeout.elapsed(key),
       executed: () => Timeout.executed(key),
       exists: () => Timeout.exists(key),
       lastExecuted: () => Timeout.lastExecuted(key),
+      meta: () => Timeout.meta(key),
       pause: () => Timeout.pause(key),
       paused: () => Timeout.paused(key),
       pending: () => Timeout.pending(key),
       remaining: () => Timeout.remaining(key),
+      reset: (ms: number, ...params: any[]) => Timeout.reset(key, ms, ...params),
       restart: () => Timeout.restart(key),
       resume: () => Timeout.resume(key),
       set: (newCallback: Callback, newMs = 0, ...newParams: any[]) => Timeout.set(key, newCallback, newMs, ...newParams),

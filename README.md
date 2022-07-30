@@ -21,8 +21,10 @@ The `setTimeout()` and `clearTimeout()` primitives are fine for basic functional
 * check if a timeout is still pending execution
 * check if a timeout has already executed
 * pause a pending timeout's countdown
-* determine the number of milliseconds remaining in a timeout's countdown
+* determine the milliseconds remaining for a timeout's countdown
+* determine the milliseconds since you started the timeout
 * restart a countdown in progress
+* reset an already executed timeout
 * get the exact timestamp when the execution occurred
 
 Checkout the examples below. You can also play around with a demo at [this CodePen](http://codepen.io/rommelsantor/pen/Pbepde) and read a little more at [this Medium article](https://hackernoon.com/smarter-javascript-timeouts-24308f3be5ab).
@@ -39,7 +41,7 @@ Checkout the examples below. You can also play around with a demo at [this CodeP
 
 ## Usage
 
-We must be able to uniquely identify every timeout. You can define an explicit, human-readable key or you can default to allowing the callback function itself to be implicitly used as its identifier.
+We must be able to uniquely identify every timeout. You can define an explicit, human-readable key or you can default to allowing the callback function itself to be implicitly used as the identifier.
 
 ### Static
 
@@ -58,10 +60,14 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
 * `Timeout.call(key)`
   * independently fires an existing callback without affecting any pending/executed/etc. meta state
   * returns false if `key` does not exist
+* `Timeout.meta(key)`
+  * returns an object with all the metadata about the timeout for `key`
 * `Timeout.exists(key)`
   * returns true if timeout exists for `key` and is not erased, whether or not it has executed
 * `Timeout.pending(key)`
   * returns true if timeout exists for `key` and has not yet executed
+* `Timeout.elapsed(key)`
+  * returns milliseconds since the timeout for `key` was started (via set/reset/create)
 * `Timeout.remaining(key)`
   * returns milliseconds remaining in the countdown until the callback executes
 * `Timeout.executed(key)`
@@ -72,8 +78,13 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * pauses the timeout identified by `key` if it exists and has not yet executed
 * `Timeout.paused(key)`
   * returns true if timeout for `key` exists and is currently paused
-* `Timeout.restart(key)`
+* `Timeout.reset(key, millisecs, param1, param2, ...)`
+  * restart the countdown anew, optionally with new millisecs and/or params of existing timeout identified by `key`
+  * this is like calling `set()` again, except without providing the callback again
+  * this will restart regardless of the state of the timeout (e.g., paused or executed)
+* `Timeout.restart(key, force=false)`
   * restart the countdown with the original millisecs of a pending or paused timeout identified by `key`
+  * with `force` enabled, the timeout will be restarted even if it has already executed
 * `Timeout.resume(key)`
   * allows the countdown of a paused timeout identified by `key` to resume
 * `Timeout.clear(key, erase = true)`
@@ -82,20 +93,55 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
 
 ### Instantiated
 
+#### Object Without Key
+
 * `Timeout.instantiate(callback, millisecs = 0, param1, param2, ...)`
   * creates a `Timeout` instance, which can be used as a handle for the timeout
   * this mitigates the need to pass a `key` for every method and makes transportable the management of a given timeout
-  * _note: an explicit key is not supported for an instantiated object as that would defeat its purpose_
 
 Once you have an instantiated timeout, you can use that object to execute all the static methods described above, except without a `key` parameter.
 
-#### Example
+##### Example
 
 ```js
 const timeout = Timeout.instantiate(() => { return 'foo bar' }, 1500)
 timeout.exists() // true
 timeout.executed() // false
 // now `timeout` can be passed around and managed without you having the key or callback in hand
+```
+
+#### Object With Key
+
+* `Timeout.instantiate(key, callback, millisecs = 0, param1, param2, ...)`
+  * same as above except identified by a custom key
+  * this allows you to execute static `Timeout` methods with the same key and without the instantiated object
+
+##### Example
+
+```js
+const myTimeout = Timeout.instantiate('my_timeout', () => {}, 1500)
+
+// somewhere else in your app call static methods where you don't have myTimeout available
+Timeout.exists('my_timeout') // true
+```
+
+#### Object Linked by Key
+
+* `Timeout.instantiate(key)`
+  * this also allows you to link a newly instantiated object to an existing timeout
+
+##### Example
+
+```js
+const originalTimeout = Timeout.instantiate('original_timeout', () => {}, 2500)
+
+// somewhere else in your app instantiate a new object linked to the original
+const distantTimeout = Timeout.instantiate('my_timeout')
+
+// you could also instantiate an object linked to a statically created timeout
+Timeout.set('my_static_timeout', () => {})
+
+const objectified = Timeout.instantiate('my_static_timeout')
 ```
 
 ## Example 1 - static
@@ -117,6 +163,13 @@ Timeout.remaining(myCallback) // 1999
 const timeout = Timeout.instantiate(() => { doSomething() }, 3000)
 timeout.exists() // true
 timeout.pause()
+
+const namedTimeout = Timeout.instantiate('foo_bar', () => {})
+const mirror = Timeout.instantiate('foo_bar') // identical to namedTimeout
+
+Timeout.set('the_shins', () => {})
+const linkToStatic = Timeout.instantiate('the_shins')
+linkToStatic.exists() // true
 ```
 
 ## Example 3 - create
@@ -191,4 +244,5 @@ document.addEventListener('scroll', onScrollThrottled)
 * `restart()` - thanks to [Roli4711](https://github.com/Roli4711) for the suggestion!
 * `instantiate()` - thanks to [Alec Hirsch](https://github.com/alechirsch) for the idea!
 * Thanks to [Marcus Calidus](https://github.com/MarcusCalidus) for converting to TypeScript and adding `lastExecuted()`!
+* `reset()`, `elapsed()`, `meta()`, `instantiate by key` - thanks to [Emmanuel Mahuni](https://github.com/emahuni) for the suggestions!
 
