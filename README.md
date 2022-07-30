@@ -82,9 +82,11 @@ We must be able to uniquely identify every timeout. You can define an explicit, 
   * restart the countdown anew, optionally with new millisecs and/or params of existing timeout identified by `key`
   * this is like calling `set()` again, except without providing the callback again
   * this will restart regardless of the state of the timeout (e.g., paused or executed)
+  * returns the same as `set()`, but returns `false` if no timeout can be found by `key`
 * `Timeout.restart(key, force=false)`
   * restart the countdown with the original millisecs of a pending or paused timeout identified by `key`
   * with `force` enabled, the timeout will be restarted even if it has already executed
+  * returns the same as `set()`, but returns `false` if no timeout can be found by `key` or if it has already executed and `force` is off
 * `Timeout.resume(key)`
   * allows the countdown of a paused timeout identified by `key` to resume
 * `Timeout.clear(key, erase = true)`
@@ -129,6 +131,7 @@ Timeout.exists('my_timeout') // true
 
 * `Timeout.instantiate(key)`
   * this also allows you to link a newly instantiated object to an existing timeout
+  * returns `undefined` if no timeout can be found by the specified key
 
 ##### Example
 
@@ -136,7 +139,7 @@ Timeout.exists('my_timeout') // true
 const originalTimeout = Timeout.instantiate('original_timeout', () => {}, 2500)
 
 // somewhere else in your app instantiate a new object linked to the original
-const distantTimeout = Timeout.instantiate('my_timeout')
+const distantTimeout = Timeout.instantiate('original_timeout')
 
 // you could also instantiate an object linked to a statically created timeout
 Timeout.set('my_static_timeout', () => {})
@@ -168,8 +171,8 @@ const namedTimeout = Timeout.instantiate('foo_bar', () => {})
 const mirror = Timeout.instantiate('foo_bar') // identical to namedTimeout
 
 Timeout.set('the_shins', () => {})
-const linkToStatic = Timeout.instantiate('the_shins')
-linkToStatic.exists() // true
+const linkedTimeout = Timeout.instantiate('the_shins')
+linkedTimeout.exists() // true
 ```
 
 ## Example 3 - create

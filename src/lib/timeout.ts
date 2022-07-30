@@ -367,7 +367,7 @@ export class Timeout {
       const metadata: MetadataRecord = Timeout.meta(key)
 
       if (!metadata) {
-        throw Error('Timeout.instantiate() attempted to link to nonexistent object by key')
+        return undefined
       }
 
       ms = metadata.ms
